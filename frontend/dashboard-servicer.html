@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Provider Dashboard | SmartHub</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+
+        .sidebar {
+            width: 280px;
+            padding: 2rem;
+            border-right: 1px solid var(--glass-border);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem 5%;
+        }
+
+        .sidebar-link {
+            display: block;
+            padding: 1rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .sidebar-link.active,
+        .sidebar-link:hover {
+            background: var(--glass-border);
+            color: var(--text-main);
+        }
+
+        .tabs-filter {
+            display: flex;
+            gap: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .tabs-filter .btn {
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+        }
+
+        .tabs-filter .btn.active {
+            background: var(--gold);
+            color: #070b14;
+        }
+
+        /* Fix select dropdown visibility */
+        select {
+            background: rgba(15, 23, 42, 0.5);
+            color: var(--text-main);
+            cursor: pointer;
+        }
+
+        select option {
+            background-color: #1e293b;
+            color: #ffffff;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="scrolled">
+        <div class="logo" onclick="window.location.href='index.html'" style="cursor: pointer;"><span>SmartHub</span>
+        </div>
+        <div class="user-info">
+            <span id="userName" class="gold-text" style="margin-right: 1.5rem; font-weight: 600;"></span>
+            <button onclick="api.auth.logout()" class="btn btn-outline" style="padding: 0.5rem 1rem;">Logout</button>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <a href="#" class="sidebar-link active" onclick="showTab('appointments', event)"><i
+                    class="fas fa-calendar-alt"></i> Jobs List</a>
+            <a href="#" class="sidebar-link" onclick="showTab('completed-tasks', event)"><i class="fas fa-tasks"></i>
+                Completed
+                Tasks</a>
+            <a href="#" class="sidebar-link" onclick="showTab('complaints', event)"><i
+                    class="fas fa-exclamation-triangle"></i>
+                My
+                Complaints</a>
+            <a href="#" class="sidebar-link" onclick="showTab('reviews', event)"><i class="fas fa-star"></i> Reviews</a>
+            <a href="#" class="sidebar-link" onclick="showTab('profile', event)"><i class="fas fa-user-edit"></i> Manage
+                Profile</a>
+        </aside>
+
+        <main class="main-content">
+            <div id="appointments-tab">
+                <div
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+                    <div class="glass premium-card" style="padding: 1.5rem; text-align: center;">
+                        <h3 id="revenueTotal" class="gold-text" style="font-size: 2.5rem;">$0</h3>
+                        <p style="color: var(--text-muted);">Current Earnings</p>
+                    </div>
+                    <div class="glass premium-card" style="padding: 1.5rem; text-align: center;">
+                        <h3 id="activeJobs" class="gold-text" style="font-size: 2.5rem;">0</h3>
+                        <p style="color: var(--text-muted);">Active Appointments</p>
+                    </div>
+                    <div class="glass premium-card" style="padding: 1.5rem; text-align: center;">
+                        <h3 id="completedCount" class="gold-text" style="font-size: 2.5rem;">0</h3>
+                        <p style="color: var(--text-muted);">Completed Tasks</p>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-top: 3rem;">
+                    <div>
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <h2 class="gold-light-text">Jobs List (<span id="appointmentCount">0</span>)</h2>
+                            <div class="tabs-filter">
+                                <button class="btn btn-outline active" onclick="filterAppointments('new')"
+                                    id="btnNewWork">New Work</button>
+                                <button class="btn btn-outline" onclick="filterAppointments('ongoing')"
+                                    id="btnOngoingWork">Ongoing Work</button>
+                            </div>
+                        </div>
+                        <div id="appointmentList" style="margin-top: 1.5rem;">
+                            <!-- Appointments loaded here -->
+                        </div>
+                    </div>
+                    <div>
+                        <div class="glass" style="padding: 2rem; margin-bottom: 2rem;">
+                            <h3 class="gold-light-text">Earnings Trends</h3>
+                            <canvas id="earningsChart" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="completed-tasks-tab" style="display: none;">
+                <h2 class="gold-light-text">Completed Tasks</h2>
+                <div id="completedTasksList" style="margin-top: 1.5rem;">
+                    <!-- Completed tasks loaded here -->
+                </div>
+            </div>
+
+            <div id="complaints-tab" style="display: none;">
+                <h2 class="gold-light-text">My Complaints</h2>
+                <div id="complaintsList" style="margin-top: 1.5rem;">
+                    <!-- Complaints loaded here -->
+                </div>
+            </div>
+
+            <div id="reviews-tab" style="display: none;">
+                <h2 class="gold-light-text">Client Reviews</h2>
+                <div class="glass" style="padding: 2rem; margin-top: 1.5rem;">
+                    <div id="reviewsTabList">
+                        <!-- Reviews moved here -->
+                    </div>
+                </div>
+            </div>
+
+            <div id="profile-tab" style="display: none;">
+                <div style="display: grid; grid-template-columns: 1fr; gap: 2rem;">
+                    <div>
+                        <h2>Service Profile</h2>
+                        <form id="profileForm" class="glass"
+                            style="margin-top: 2rem; padding: 2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                            <div class="form-group">
+                                <label>Service Category</label>
+                                <select id="profileCategory" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Base Price ($)</label>
+                                <input type="number" id="profilePrice" required>
+                            </div>
+                            <div class="form-group" style="grid-column: span 2;">
+                                <label>Experience (Years)</label>
+                                <input type="number" id="profileExp" placeholder="Years of experience">
+                            </div>
+                            <div class="form-group" style="grid-column: span 2;">
+                                <label>Service Description</label>
+                                <textarea id="profileDesc" rows="4"
+                                    placeholder="Briefly describe your expertise..."></textarea>
+                            </div>
+                            <div class="form-group" style="grid-column: span 2;">
+                                <label>Upload Task Photos</label>
+                                <input type="file" id="profilePhotos" multiple accept="image/*" class="form-control">
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="grid-column: span 2;">Update
+                                Profile</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+        const user = checkAuth();
+        document.getElementById('userName').textContent = `Hello, ${user.username || 'Worker'}`;
+
+        function initEarningsChart() {
+            const ctx = document.getElementById('earningsChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Earnings',
+                        data: [150, 230, 450, 310, 560, 890, 400],
+                        backgroundColor: '#d4af37'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { display: false }, x: { grid: { display: false }, ticks: { color: '#94a3b8' } } }
+                }
+            });
+        }
+
+        async function loadCategories() {
+            try {
+                const cats = await api.admin.getCategories();
+                const select = document.getElementById('profileCategory');
+                select.innerHTML = cats.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+            } catch (e) { }
+        }
+
+        async function loadProfile() {
+            try {
+                const p = await api.servicer.getProfile();
+                document.getElementById('profilePrice').value = p.price || "";
+                document.getElementById('profileDesc').value = p.description || "";
+                document.getElementById('profileExp').value = p.experience || "";
+                if (p.category_id) {
+                    document.getElementById('profileCategory').value = p.category_id;
+                }
+            } catch (e) { }
+        }
+
+        let allAppointments = [];
+        let currentFilter = 'new';
+
+        async function loadAppointments() {
+            const list = document.getElementById('appointmentList');
+            const completedList = document.getElementById('completedTasksList');
+            const countSpan = document.getElementById('appointmentCount');
+
+            list.innerHTML = '<p>Loading...</p>';
+            try {
+                allAppointments = await api.servicer.getAppointments();
+                renderAppointments();
+                renderCompletedTasks();
+                loadServicerComplaints();
+                loadReviews();
+            } catch (e) {
+                list.innerHTML = `<p>Error loading appointments: ${e.message}</p>`;
+            }
+        }
+
+        function renderAppointments() {
+            const list = document.getElementById('appointmentList');
+            const countSpan = document.getElementById('appointmentCount');
+
+            const filtered = allAppointments.filter(a => {
+                if (currentFilter === 'new') return a.status === 'Pending';
+                if (currentFilter === 'ongoing') return a.status === 'Confirmed';
+                return false;
+            });
+
+            countSpan.textContent = filtered.length;
+            list.innerHTML = filtered.length ? '' : `<p>No ${currentFilter} work at the moment.</p>`;
+
+            let revenue = 0;
+            allAppointments.forEach(a => { if (a.status === 'Completed') revenue += a.amount; });
+            document.getElementById('revenueTotal').textContent = `$${revenue}`;
+            document.getElementById('activeJobs').textContent = allAppointments.filter(a => a.status === 'Confirmed').length;
+            document.getElementById('completedCount').textContent = allAppointments.filter(a => a.status === 'Completed').length;
+
+            filtered.forEach(a => {
+                const isPending = a.status === 'Pending';
+                const isConfirmed = a.status === 'Confirmed';
+
+                list.innerHTML += `
+                    <div class="glass" style="padding: 1.5rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h4>Customer: ${a.user_name}</h4>
+                            <p style="color: var(--text-muted);">Date: ${a.scheduled_date}</p>
+                            <p style="color: var(--text-muted);">Location: ${a.location}</p>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="margin-bottom: 0.5rem;">
+                                <span style="background: var(--accent); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem;">${a.status}</span>
+                                <strong style="margin-left: 1rem;">$${a.amount}</strong>
+                            </div>
+                            <div class="action-buttons">
+                                ${isPending ? `
+                                    <button class="btn btn-primary" style="padding: 0.4rem 1rem; font-size: 0.8rem;" onclick="updateStatus(${a.id}, 'Confirmed')">Accept</button>
+                                    <button class="btn btn-outline" style="padding: 0.4rem 1rem; font-size: 0.8rem; margin-left: 0.5rem;" onclick="updateStatus(${a.id}, 'Cancelled')">Decline</button>
+                                ` : ''}
+                                ${isConfirmed ? `
+                                    <button class="btn btn-primary" style="padding: 0.4rem 1rem; font-size: 0.8rem;" onclick="updateStatus(${a.id}, 'Completed')">Complete Task</button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function renderCompletedTasks() {
+            const list = document.getElementById('completedTasksList');
+            const completed = allAppointments.filter(a => a.status === 'Completed');
+            list.innerHTML = completed.length ? '' : '<p>No completed tasks yet.</p>';
+
+            completed.forEach(a => {
+                list.innerHTML += `
+                    <div class="glass" style="padding: 1.5rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; opacity: 0.8;">
+                        <div>
+                            <h4>Customer: ${a.user_name}</h4>
+                            <p style="color: var(--text-muted);">Completed on: ${a.scheduled_date}</p>
+                        </div>
+                        <div>
+                            <span style="background: #22c55e; color: white; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem;">Completed</span>
+                            <strong style="margin-left: 1rem;">$${a.amount}</strong>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        async function updateStatus(id, status) {
+            try {
+                await api.servicer.updateAppointmentStatus(id, status);
+                // Update local state for immediate feedback
+                const appt = allAppointments.find(a => a.id === id);
+                if (appt) appt.status = status;
+                renderAppointments();
+                renderCompletedTasks();
+                alert(`Appointment ${status.toLowerCase()} successfully!`);
+            } catch (e) {
+                alert("Failed to update status: " + e.message);
+            }
+        }
+
+        function filterAppointments(filter) {
+            currentFilter = filter;
+            document.getElementById('btnNewWork').classList.toggle('active', filter === 'new');
+            document.getElementById('btnOngoingWork').classList.toggle('active', filter === 'ongoing');
+            renderAppointments();
+        }
+
+        async function loadServicerComplaints() {
+            const list = document.getElementById('complaintsList');
+            list.innerHTML = '<p>Loading...</p>';
+            try {
+                const complaints = await api.servicer.getComplaints();
+                list.innerHTML = complaints.length ? '' : '<p>No complaints found.</p>';
+                complaints.forEach(c => {
+                    const statusColor = c.status === 'Resolved' ? '#10b981' : '#f59e0b';
+                    list.innerHTML += `
+                        <div class="glass" style="padding: 1.5rem; margin-bottom: 1rem; border-left: 4px solid ${statusColor};">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                <div>
+                                    <h4 style="margin-bottom: 0.5rem;">${c.subject} <small style="color: var(--text-muted); font-weight: normal;">#${c.id}</small></h4>
+                                    <p style="font-size: 0.9rem; margin-bottom: 0.5rem;">${c.description}</p>
+                                    <small style="color: var(--text-muted);">From: ${c.user_name} | Date: ${c.created_at}</small>
+                                </div>
+                                <span style="background: ${statusColor}22; color: ${statusColor}; padding: 0.2rem 0.6rem; border-radius: 5px; font-size: 0.75rem; font-weight: 700; border: 1px solid ${statusColor}AA;">${c.status}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch (e) {
+                list.innerHTML = `<p>Error loading complaints: ${e.message}</p>`;
+            }
+        }
+
+        async function loadReviews() {
+            const list = document.getElementById('reviewsTabList');
+            list.innerHTML = '<p>Loading reviews...</p>';
+            try {
+                const reviews = await api.servicer.getReviews();
+                if (reviews.length === 0) {
+                    list.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 2rem;">No reviews yet. Complete more tasks to build your reputation!</p>';
+                    return;
+                }
+
+                list.innerHTML = reviews.map(r => `
+                    <div style="margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--glass-border);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <div style="color: var(--gold); font-size: 0.9rem;">
+                                ${Array(r.rating).fill('<i class="fas fa-star"></i>').join('')}
+                                ${Array(5 - r.rating).fill('<i class="far fa-star"></i>').join('')}
+                            </div>
+                            <small style="color: var(--text-muted);">${r.created_at}</small>
+                        </div>
+                        <p style="font-size: 1rem; margin-top: 0.5rem; color: var(--text-main);">"${r.comment}"</p>
+                        <div style="margin-top: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="fas fa-user-circle" style="color: var(--gold-light);"></i>
+                            <small style="color: var(--gold-light); font-weight: 600;">${r.user_name}</small>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) {
+                list.innerHTML = `<p>Error loading reviews: ${e.message}</p>`;
+            }
+        }
+
+        document.getElementById('profileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                category_id: document.getElementById('profileCategory').value,
+                base_price: parseFloat(document.getElementById('profilePrice').value),
+                description: document.getElementById('profileDesc').value,
+                experience: document.getElementById('profileExp').value
+            };
+
+            // Handle mock photo upload
+            const files = document.getElementById('profilePhotos').files;
+            if (files.length > 0) {
+                console.log(`Uploading ${files.length} photos...`);
+                // In a real app, you'd use FormData to send files to api.servicer.uploadTaskPhoto
+            }
+
+            try {
+                await api.servicer.updateProfile(data);
+                alert("Profile updated successfully!");
+            } catch (err) {
+                alert(err.message);
+            }
+        });
+
+        function showTab(tab, event) {
+            document.getElementById('appointments-tab').style.display = tab === 'appointments' ? 'block' : 'none';
+            document.getElementById('completed-tasks-tab').style.display = tab === 'completed-tasks' ? 'block' : 'none';
+            document.getElementById('complaints-tab').style.display = tab === 'complaints' ? 'block' : 'none';
+            document.getElementById('reviews-tab').style.display = tab === 'reviews' ? 'block' : 'none';
+            document.getElementById('profile-tab').style.display = tab === 'profile' ? 'block' : 'none';
+
+            const links = document.querySelectorAll('.sidebar-link');
+            links.forEach(l => l.classList.remove('active'));
+
+            if (event && event.currentTarget) {
+                event.currentTarget.classList.add('active');
+            } else {
+                links.forEach(l => {
+                    if (l.getAttribute('onclick').includes(`'${tab}'`)) l.classList.add('active');
+                });
+            }
+
+            if (tab === 'appointments') renderAppointments();
+            if (tab === 'completed-tasks') renderCompletedTasks();
+            if (tab === 'reviews') loadReviews();
+        }
+
+        // Init
+        loadCategories();
+        loadProfile();
+        loadAppointments();
+        initEarningsChart();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | SmartHub Premium</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="login-page-wrapper animate-fade-in">
+        <!-- Left Side: Dynamic Image -->
+        <div class="login-image-side" id="loginImage" style="background-image: url('assets/hero_bg.jpg');">
+            <div class="login-image-content">
+                <div class="logo" style="font-size: 3rem; margin-bottom: 2rem;"
+                    onclick="window.location.href='index.html'"><span>SmartHub</span></div>
+                <h2 id="imageTitle" class="gold-text" style="font-size: 2.5rem;">Welcome Home</h2>
+                <p id="imageDesc" style="font-size: 1.2rem; color: #fff; max-width: 400px; margin: 0 auto;">Access your
+                    personal dashboard to manage your home services and bookings.</p>
+            </div>
+        </div>
+
+        <!-- Right Side: Login Form -->
+        <div class="login-form-side">
+            <div style="width: 100%; max-width: 450px;">
+                <div class="login-type-toggle">
+                    <button class="toggle-btn active" onclick="switchLogin('user')">User Login</button>
+                    <button class="toggle-btn" onclick="switchLogin('servicer')">Worker Login</button>
+                </div>
+
+                <div class="form-container" style="margin: 0; padding: 0; width: 100%; max-width: 100%;">
+                    <h2 id="formTitle" style="margin-bottom: 1rem;">Customer Sign In</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 2.5rem;" id="formSubtitle">Experience premium
+                        home care with a single click.</p>
+
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label>Username / Email</label>
+                            <input type="text" id="username" placeholder="john_doe" required>
+                        </div>
+                        <div class="form-group" style="position: relative;">
+                            <label>Password</label>
+                            <input type="password" id="password" placeholder="••••••••" required
+                                style="padding-right: 40px; width: 100%;">
+                            <i class="fas fa-eye" id="togglePassword"
+                                style="position: absolute; right: 15px; bottom: 17px; cursor: pointer; color: var(--text-muted);"
+                                onclick="togglePasswordVisibility('password', 'togglePassword')"></i>
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 2rem;">
+                            <label
+                                style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: var(--text-muted); font-size: 0.9rem;">
+                                <input type="checkbox" style="width: auto;"> Remember me
+                            </label>
+                            <a href="#" style="color: var(--gold); font-size: 0.9rem; text-decoration: none;">Forgot
+                                password?</a>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary"
+                            style="width: 100%; height: 55px; font-size: 1.1rem; background: var(--gold);">
+                            Sign In to Portal
+                        </button>
+                    </form>
+
+                    <p style="text-align: center; margin-top: 2.5rem; color: var(--text-muted);">
+                        New to SmartHub? <a href="register.html"
+                            style="color: var(--gold); text-decoration: none; font-weight: 600;">Create Account</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        window.onload = () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const role = urlParams.get('role');
+            if (role === 'servicer') {
+                switchLogin('servicer');
+            }
+        };
+
+        let currentRole = 'user';
+
+        function togglePasswordVisibility(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        function switchLogin(role) {
+            currentRole = role;
+            const btns = document.querySelectorAll('.toggle-btn');
+            btns.forEach(btn => btn.classList.remove('active'));
+
+            const activeBtn = Array.from(btns).find(btn => {
+                const text = btn.textContent.toLowerCase();
+                return role === 'servicer' ? text.includes('worker') : text.includes('user');
+            });
+            if (activeBtn) activeBtn.classList.add('active');
+
+            const loginImage = document.getElementById('loginImage');
+            const imageTitle = document.getElementById('imageTitle');
+            const imageDesc = document.getElementById('imageDesc');
+            const formTitle = document.getElementById('formTitle');
+            const formSubtitle = document.getElementById('formSubtitle');
+
+            if (role === 'user') {
+                loginImage.style.backgroundImage = "url('assets/hero_bg.jpg')";
+                imageTitle.textContent = "Welcome Home";
+                imageDesc.textContent = "Access your personal dashboard to manage your home services and bookings.";
+                formTitle.textContent = "Customer Sign In";
+                formSubtitle.textContent = "Experience premium home care with a single click.";
+            } else {
+                loginImage.style.backgroundImage = "url('assets/service_mechanics.jpg')";
+                imageTitle.textContent = "Partner Portal";
+                imageDesc.textContent = "Manage your appointments, track earnings, and grow your service business.";
+                formTitle.textContent = "Professional Login";
+                formSubtitle.textContent = "Connecting skilled professionals with high-value clients.";
+            }
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const user = await api.auth.login({ username, password, role: currentRole });
+
+                // Optional: Validate if the logged in user's role matches the selected toggle
+                // Force redirection based on the selected login type to ensure worker dashboard shows
+                if (currentRole === 'servicer') {
+                    window.location.href = 'dashboard-servicer.html';
+                } else if (user.role === 'admin') {
+                    window.location.href = 'dashboard-admin.html';
+                } else if (user.role === 'servicer') {
+                    window.location.href = 'dashboard-servicer.html';
+                } else {
+                    window.location.href = 'dashboard-user.html';
+                }
+
+            } catch (err) {
+                alert(err.message);
+            }
+        });
+    </script>
+</body>
+
+</html>

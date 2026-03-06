@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Home Service Hub | Premium Home Care</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <nav id="navbar">
+        <a href="index.html" class="logo"><span>SmartHub</span></a>
+        <ul class="nav-links">
+            <li><a href="#services">Services</a></li>
+            <li><a href="#how-it-works">How it Works</a></li>
+            <li><a href="#community">Community</a></li>
+            <li><a href="login.html?role=servicer" class="gold-light-text" style="font-weight: 600;">Worker Portal</a>
+            </li>
+            <li><a href="javascript:void(0)" onclick="enterAdminPortal()" class="gold-text">Admin Portal</a></li>
+        </ul>
+        <div class="nav-actions">
+            <a href="login.html" class="btn btn-outline">Login</a>
+            <a href="register.html" class="btn btn-primary">Join Now</a>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-content animate-fade-in">
+            <h1>Expert Home Services, <br><span class="gold-text">At Your Fingertips.</span></h1>
+            <p>From plumbing to electrical work, booking a professional has never been this seamless. Trusted by
+                thousands of homeowners.</p>
+            <div class="hero-btns">
+                <a href="#services" class="btn btn-primary">Explore Services <i class="fas fa-arrow-right"></i></a>
+                <a href="#how-it-works" class="btn btn-outline">Watch Demo</a>
+            </div>
+        </div>
+    </header>
+
+    <section id="about" class="section">
+        <div style="display: flex; align-items: center; gap: 4rem; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 300px;">
+                <h2 style="font-size: 3rem; margin-bottom: 1.5rem;">Why Choose <span class="gold-text">SmartHub?</span>
+                </h2>
+                <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 2rem;">We are a community-driven
+                    platform dedicated to simplifying home maintenance. Our mission is to bridge the gap between skilled
+                    professionals and homeowners through a transparent, secure, and intuitive digital portal.</p>
+                <ul style="list-style: none;">
+                    <li style="margin-bottom: 1rem;"><i class="fas fa-check-circle"
+                            style="color: var(--accent); margin-right: 0.5rem;"></i> Verified professionals with
+                        background checks</li>
+                    <li style="margin-bottom: 1rem;"><i class="fas fa-check-circle"
+                            style="color: var(--accent); margin-right: 0.5rem;"></i> Transparent pricing and secure
+                        simulated payments</li>
+                    <li style="margin-bottom: 1rem;"><i class="fas fa-check-circle"
+                            style="color: var(--accent); margin-right: 0.5rem;"></i> 24/7 customer support and complaint
+                        resolution</li>
+                </ul>
+            </div>
+            <div class="glass"
+                style="flex: 1; min-width: 300px; padding: 1.5rem; text-align: center; overflow: hidden;">
+                <img src="assets/about_hub.jpg" alt="Smart Matching AI" class="feature-img">
+                <div style="padding: 1.5rem;">
+                    <h3>Smart Matching AI</h3>
+                    <p>Our algorithm finds the best professional near you based on rating, availability, and specific
+                        project needs.</p>
+                </div>
+            </div>
+        </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-item">
+                <span class="stat-number gold-text" data-target="5000">0</span>
+                <p style="color: var(--text-muted);">Happy Homeowners</p>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number gold-text" data-target="1500">0</span>
+                <p style="color: var(--text-muted);">Verified Workers</p>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number gold-text" data-target="12000">0</span>
+                <p style="color: var(--text-muted);">Services Completed</p>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number gold-text" data-target="24">0</span>
+                <p style="color: var(--text-muted);">Support Available (hrs)</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="trust" class="section" style="background: rgba(212, 175, 55, 0.03);">
+        <div class="section-title">
+            <h2 class="gold-text">Unmatched Trust & Safety</h2>
+            <p>Your security is our top priority in every single task.</p>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+            <div class="glass premium-card" style="padding: 2.5rem; text-align: center;">
+                <i class="fas fa-user-shield" style="font-size: 2.5rem; color: var(--gold); margin-bottom: 1.5rem;"></i>
+                <h3>Verified Experts</h3>
+                <p style="color: var(--text-muted);">Background checks on every individual servicer.</p>
+            </div>
+            <div class="glass premium-card" style="padding: 2.5rem; text-align: center;">
+                <i class="fas fa-hand-holding-heart"
+                    style="font-size: 2.5rem; color: var(--gold); margin-bottom: 1.5rem;"></i>
+                <h3>Satisfaction Guarantee</h3>
+                <p style="color: var(--text-muted);">Not happy? We'll make it right at no extra cost.</p>
+            </div>
+            <div class="glass premium-card" style="padding: 2.5rem; text-align: center;">
+                <i class="fas fa-lock" style="font-size: 2.5rem; color: var(--gold); margin-bottom: 1.5rem;"></i>
+                <h3>Secure Transactions</h3>
+                <p style="color: var(--text-muted);">End-to-end encrypted payment and data storage.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="section">
+        <div class="section-title">
+            <h2>Our Specialized Services</h2>
+            <p>Click a category to see our top-rated specialists.</p>
+        </div>
+        <div class="services-grid">
+            <div class="service-card glass plumbing" onclick="showSpecialist('Plumbing')">
+                <i class="fas fa-faucet"></i>
+                <h3>Plumbing</h3>
+                <p>Expert leak repairs and pipe installations.</p>
+            </div>
+            <div class="service-card glass electrical" onclick="showSpecialist('Electrical')">
+                <i class="fas fa-bolt"></i>
+                <h3>Electrical</h3>
+                <p>Safe wiring and appliance repairs.</p>
+            </div>
+            <div class="service-card glass cleaning" onclick="showSpecialist('Cleaning')">
+                <i class="fas fa-broom"></i>
+                <h3>Cleaning</h3>
+                <p>Deep cleaning and sanitization services.</p>
+            </div>
+            <div class="service-card glass painting" onclick="showSpecialist('Painting')">
+                <i class="fas fa-paint-roller"></i>
+                <h3>Painting</h3>
+                <p>Professional interior and exterior painting.</p>
+            </div>
+            <div class="service-card glass mechanics" onclick="showSpecialist('Mechanics')">
+                <i class="fas fa-tools"></i>
+                <h3>Mechanics</h3>
+                <p>Car maintenance at your doorstep.</p>
+            </div>
+            <div class="service-card glass movers" onclick="showSpecialist('Movers')">
+                <i class="fas fa-truck-ramp-box"></i>
+                <h3>Movers</h3>
+                <p>Hassle-free packing and moving.</p>
+            </div>
+        </div>
+
+        <!-- Dynamic Specialist Highlight -->
+        <div id="specialist-box" class="glass"
+            style="margin-top: 4rem; padding: 3rem; display: none; animation: fadeInUp 0.5s ease;">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+                <div id="specialist-info">
+                    <h4 id="spec-category" style="color: var(--primary); text-transform: uppercase; font-size: 0.8rem;">
+                        Category</h4>
+                    <h3 id="spec-name" style="font-size: 2rem; margin: 0.5rem 0;">Specialist Name</h3>
+                    <p id="spec-desc" style="color: var(--text-muted); max-width: 600px;">Description goes here...</p>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-size: 1.5rem; color: #fbbf24; margin-bottom: 0.5rem;">
+                        <i class="fas fa-star"></i> <span id="spec-rating">4.9</span>
+                    </div>
+                    <a href="login.html" class="btn btn-primary" id="spec-book-btn">Book Now</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="testimonials" class="section glass"
+        style="margin: 0 5%; border-radius: 40px; background: rgba(30, 41, 59, 0.4);">
+        <div class="section-title">
+            <h2>Real Stories from Real Users</h2>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+            <div style="padding: 2rem;">
+                <div style="color: #fbbf24; margin-bottom: 1rem;"><i class="fas fa-star"></i><i
+                        class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                        class="fas fa-star"></i></div>
+                <p>"SmartHub saved my weekend! Found a plumber in 10 minutes when my kitchen flooded. The interactive UI
+                    made it so easy."</p>
+                <div style="margin-top: 1.5rem; font-weight: 600;">- Sarah Jameson, Brooklyn</div>
+            </div>
+            <div style="padding: 2rem;">
+                <div style="color: #fbbf24; margin-bottom: 1rem;"><i class="fas fa-star"></i><i
+                        class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                        class="fas fa-star"></i></div>
+                <p>"As a service provider, this platform is a game changer. The dashboard gives me full control over my
+                    schedule and revenue."</p>
+                <div style="margin-top: 1.5rem; font-weight: 600;">- Mike Torres, Electrician</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="faq" class="section">
+        <div class="section-title">
+            <h2>Frequently Asked Questions</h2>
+        </div>
+        <div style="max-width: 800px; margin: 0 auto;">
+            <div class="glass" style="margin-bottom: 1rem; padding: 1.5rem; cursor: pointer;" onclick="toggleFaq(this)">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h4 style="margin:0">How do I book a service?</h4>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <p style="margin-top: 1rem; display: none; color: var(--text-muted);">Simply register as a user, search
+                    for the service you need, choose a professional based on their profile and ratings, and click "Book
+                    Now" with your preferred time.</p>
+            </div>
+            <div class="glass" style="margin-bottom: 1rem; padding: 1.5rem; cursor: pointer;" onclick="toggleFaq(this)">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h4 style="margin:0">Is my payment secure?</h4>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <p style="margin-top: 1rem; display: none; color: var(--text-muted);">Yes! We use an integrated secure
+                    payment gateway simulation to ensure your details are always protected during transactions.</p>
+            </div>
+            <div class="glass" style="margin-bottom: 1rem; padding: 1.5rem; cursor: pointer;" onclick="toggleFaq(this)">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h4 style="margin:0">How can I join as a service provider?</h4>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <p style="margin-top: 1rem; display: none; color: var(--text-muted);">Click "Join Now" and select
+                    "Service Provider" in the registration form. Complete your profile and start receiving booking
+                    requests instantly.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="how-it-works" class="section">
+        <div class="section-title">
+            <h2 class="gold-text">How It Works</h2>
+            <p>Your journey to a better home, simplified in three easy steps.</p>
+        </div>
+        <div class="stepper">
+            <div class="step active">
+                <div class="step-icon"><i class="fas fa-search"></i></div>
+                <h3>Browse & Discover</h3>
+                <p style="color: var(--text-muted);">Explore categories and filter by location or rating.</p>
+            </div>
+            <div class="step">
+                <div class="step-icon"><i class="fas fa-calendar-check"></i></div>
+                <h3>Book Instantly</h3>
+                <p style="color: var(--text-muted);">Pick a time that works and confirm with secure payment.</p>
+            </div>
+            <div class="step">
+                <div class="step-icon"><i class="fas fa-magic"></i></div>
+                <h3>Enjoy Service</h3>
+                <p style="color: var(--text-muted);">A verified professional arrives to get the job done.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="community" class="section" style="background: rgba(99, 102, 241, 0.02);">
+        <div style="display: flex; align-items: start; gap: 4rem; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 300px;">
+                <h2 class="gold-text" style="font-size: 2.5rem; margin-bottom: 1.5rem;">The Hub Community</h2>
+                <p style="color: var(--text-muted); margin-bottom: 2rem;">A dedicated space for homeowners and workers
+                    to communicate, share tips, and grow together. Real-time updates from our localized service groups.
+                </p>
+                <div class="glass" style="padding: 1.5rem; margin-bottom: 1rem;">
+                    <h4 class="gold-light-text"><i class="fas fa-users-viewfinder"></i> Local Service Groups</h4>
+                    <p style="font-size: 0.9rem; margin-top: 0.5rem;">Join 12 active groups in your neighborhood.</p>
+                </div>
+                <div class="glass" style="padding: 1.5rem;">
+                    <h4 class="gold-light-text"><i class="fas fa-graduation-cap"></i> Pro Tips & Guides</h4>
+                    <p style="font-size: 0.9rem; margin-top: 0.5rem;">Access 50+ guides on home maintenance.</p>
+                </div>
+            </div>
+            <div class="glass" style="flex: 1.5; min-width: 350px; padding: 2rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h3 class="light-gold-text">Live Chat Space</h3>
+                    <span style="font-size: 0.8rem; color: #10b981;">Online: 152 members</span>
+                </div>
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="chat-msg msg-worker">
+                            <strong style="display: block; font-size: 0.7rem; color: var(--gold);">@SparkySam</strong>
+                            Anybody available for a quick wiring check in Brooklyn?
+                        </div>
+                        <div class="chat-msg msg-me">
+                            I can help! What's the specific issue?
+                        </div>
+                        <div class="chat-msg msg-worker">
+                            <strong style="display: block; font-size: 0.7rem; color: var(--gold);">@PipeMaster</strong>
+                            Just finished a major renovation in Queens. Great community feedback!
+                        </div>
+                    </div>
+                    <div class="chat-input-area">
+                        <input type="text" id="chatInput" placeholder="Type a message..."
+                            style="flex: 1; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--glass-border); background: rgba(0,0,0,0.3); color: white;">
+                        <button class="btn btn-primary" onclick="sendMessage()"
+                            style="padding: 0 1.5rem; background: var(--gold); color: #070b14;">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="specialist-join" class="section glass" style="margin: 4rem 5%; padding: 4rem; text-align: center;">
+        <h2 class="gold-text">Are You a Home Service Expert?</h2>
+        <p style="color: var(--text-muted); max-width: 600px; margin: 1rem auto 2rem;">Join the elite network of
+            specialists bringing premium care to homes across the city.</p>
+        <button class="btn btn-primary" onclick="openAppModal()" style="padding: 1rem 3rem;">Apply Now</button>
+    </section>
+
+    <div id="appModal" class="modal" style="display: none;">
+        <div class="modal-content glass" style="max-width: 1000px; display: flex; padding: 0; overflow: hidden;">
+            <!-- Left Image Side -->
+            <div class="modal-image-side"
+                style="flex: 1; background-image: url('assets/about_hub.jpg'); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; padding: 2rem; position: relative;">
+                <div class="login-image-content" style="position: relative; z-index: 10; text-align: center;">
+                    <div class="logo" style="font-size: 2.5rem; margin-bottom: 1.5rem;"><span>SmartHub</span></div>
+                    <h2 class="gold-text" style="font-size: 2rem;">Join as Specialist</h2>
+                    <p style="color: #fff; font-size: 1rem; opacity: 0.9;">Professional Portal Entrance</p>
+                </div>
+            </div>
+
+            <!-- Right Form Side -->
+            <div class="modal-form-side" style="flex: 1.2; padding: 3rem;">
+                <h2 class="gold-text">Specialist Application</h2>
+                <p style="color: var(--text-muted); margin-bottom: 2rem;">Tell us about your expertise to join our
+                    premium
+                    network.</p>
+                <form id="appForm">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label>Business Name / Full Name</label>
+                            <input type="text" id="appName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Service Category</label>
+                            <select id="appCategory" required
+                                style="background: rgba(15, 23, 42, 0.5); border: 1px solid var(--glass-border); border-radius: 10px; color: white; width: 100%; padding: 0.75rem;">
+                                <option value="Plumbing">Plumbing</option>
+                                <option value="Electrical">Electrical</option>
+                                <option value="Cleaning">Cleaning</option>
+                                <option value="Painting">Painting</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Experience (Years)</label>
+                        <input type="number" id="appExp" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 2rem;">
+                        <label>Why join SmartHub?</label>
+                        <textarea id="appReason" rows="3" required></textarea>
+                    </div>
+                    <div style="display: flex; gap: 1rem;">
+                        <button type="submit" class="btn btn-primary" style="flex: 2;">Submit Application</button>
+                        <button type="button" class="btn btn-outline" onclick="closeAppModal()"
+                            style="flex: 1;">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer
+        style="padding: 4rem 10%; background: #070b14; text-align: center; border-top: 1px solid var(--glass-border); margin-top: 8rem;">
+        <div class="logo" style="margin-bottom: 2rem; justify-content: center;"><span>SmartHub.</span></div>
+        <p style="color: var(--text-muted); margin-bottom: 2rem;">© 2026 Smart Home Service Hub. All rights reserved.
+        </p>
+        <div style="display: flex; justify-content: center; gap: 1.5rem;">
+            <a href="#" style="color: var(--text-muted);"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" style="color: var(--text-muted);"><i class="fab fa-twitter"></i></a>
+            <a href="#" style="color: var(--text-muted);"><i class="fab fa-instagram"></i></a>
+            <a href="#" style="color: var(--text-muted);"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+    </footer>
+
+    <script src="js/api.js"></script>
+    <script>
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // Chat functionality
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const messages = document.getElementById('chatMessages');
+            if (input.value.trim() === '') return;
+
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'chat-msg msg-me';
+            msgDiv.textContent = input.value;
+            messages.appendChild(msgDiv);
+            input.value = '';
+            messages.scrollTop = messages.scrollHeight;
+
+            // Simple auto-reply simulation
+            setTimeout(() => {
+                const reply = document.createElement('div');
+                reply.className = 'chat-msg msg-worker';
+                reply.innerHTML = `<strong style="display: block; font-size: 0.7rem; color: var(--gold);">@ProSupport</strong> Thanks for your message! A community member will respond shortly.`;
+                messages.appendChild(reply);
+                messages.scrollTop = messages.scrollHeight;
+            }, 1000);
+        }
+
+        // Stepper simulation
+        setInterval(() => {
+            const steps = document.querySelectorAll('.step');
+            let activeIdx = Array.from(steps).findIndex(s => s.classList.contains('active'));
+            steps[activeIdx].classList.remove('active');
+            activeIdx = (activeIdx + 1) % steps.length;
+            steps[activeIdx].classList.add('active');
+        }, 3000);
+
+        async function showSpecialist(category) {
+            const box = document.getElementById('specialist-box');
+            const specialists = await api.user.getServices(category);
+
+            if (specialists.length > 0) {
+                const s = specialists[0]; // Show first available for demo
+                document.getElementById('spec-category').textContent = s.category;
+                document.getElementById('spec-name').textContent = s.name;
+                document.getElementById('spec-desc').textContent = s.description;
+                document.getElementById('spec-rating').textContent = s.rating;
+                box.style.display = 'block';
+                box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function toggleFaq(el) {
+            const p = el.querySelector('p');
+            const icon = el.querySelector('.fa-chevron-down');
+            if (p.style.display === 'block') {
+                p.style.display = 'none';
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                p.style.display = 'block';
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        // Counter Animation
+        function animateCounters() {
+            const counters = document.querySelectorAll('.stat-number');
+            const speed = 200;
+
+            counters.forEach(counter => {
+                const updateCount = () => {
+                    const target = +counter.getAttribute('data-target');
+                    const count = +counter.innerText;
+                    const inc = target / speed;
+
+                    if (count < target) {
+                        counter.innerText = Math.ceil(count + inc);
+                        setTimeout(updateCount, 1);
+                    } else {
+                        counter.innerText = target + (target === 99 ? '%' : '+');
+                    }
+                };
+                updateCount();
+            });
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounters();
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        const statsSection = document.querySelector('.stats-grid');
+        if (statsSection) observer.observe(statsSection);
+
+        // Application Modal Logic
+        function openAppModal() { document.getElementById('appModal').style.display = 'flex'; }
+        function closeAppModal() { document.getElementById('appModal').style.display = 'none'; }
+
+        document.getElementById('appForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                name: document.getElementById('appName').value,
+                category: document.getElementById('appCategory').value,
+                experience: document.getElementById('appExp').value,
+                reason: document.getElementById('appReason').value
+            };
+            try {
+                await api.servicer.submitApplication(data);
+                alert("Thank you! Your application has been submitted and is under review.");
+                closeAppModal();
+            } catch (err) {
+                alert("Error: " + err.message);
+            }
+        });
+
+        // Admin Portal Entry
+        async function enterAdminPortal() {
+            const token = prompt("Enter Admin Bearer Token:");
+            if (!token) return;
+
+            try {
+                const response = await fetch('/api/admin/stats', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    localStorage.setItem('hub_session', token);
+                    localStorage.setItem('hub_user', JSON.stringify({
+                        username: 'Admin',
+                        role: 'admin'
+                    }));
+                    window.location.href = 'dashboard-admin.html';
+                } else {
+                    const errorMsg = response.status === 403 ? "Forbidden: You don't have admin permissions." :
+                        response.status === 401 ? "Unauthorized: Token is invalid." :
+                            "Access Denied: " + response.statusText;
+                    alert(errorMsg);
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Connection error: " + err.message);
+            }
+        }
+
+        // Dynamic UI Updates for Logged-in Users
+        const activeUser = JSON.parse(localStorage.getItem('hub_user'));
+        if (activeUser) {
+            // Update Navbar "Join Now"
+            const joinBtn = document.querySelector('.nav-actions a[href="register.html"]');
+            if (joinBtn) {
+                if (activeUser.role === 'servicer') {
+                    joinBtn.textContent = 'Jobs List';
+                    joinBtn.href = 'dashboard-servicer.html';
+                } else {
+                    joinBtn.textContent = 'Dashboard';
+                    joinBtn.href = activeUser.role === 'admin' ? 'dashboard-admin.html' : 'dashboard-user.html';
+                }
+            }
+
+            // Update Footer/Section "Apply Now" if worker
+            const applyBtn = document.querySelector('#specialist-join .btn-primary');
+            if (applyBtn && activeUser.role === 'servicer') {
+                applyBtn.textContent = 'Go to Jobs List';
+                applyBtn.onclick = () => window.location.href = 'dashboard-servicer.html';
+            }
+        }
+    </script>
+</body>
+
+</html>

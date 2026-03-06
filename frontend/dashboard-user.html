@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard | SmartHub</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+
+        .sidebar {
+            width: 280px;
+            padding: 2rem;
+            border-right: 1px solid var(--glass-border);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem 5%;
+        }
+
+        .sidebar-link {
+            display: block;
+            padding: 1rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .sidebar-link.active,
+        .sidebar-link:hover {
+            background: var(--glass-border);
+            color: var(--text-main);
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 20px;
+        }
+
+        .provider-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal-content {
+            max-width: 500px;
+            width: 90%;
+            padding: 3rem;
+            position: relative;
+        }
+
+        /* Gold Calendar Icon for Date Inputs */
+        input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+            filter: invert(70%) sepia(29%) saturate(836%) hue-rotate(1deg) brightness(101%) contrast(89%);
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="scrolled">
+        <div class="logo" onclick="window.location.href='index.html'" style="cursor: pointer;"><span>SmartHub</span>
+        </div>
+        <div class="user-info" id="userInfo">
+            <span id="userName" style="margin-right: 1.5rem;"></span>
+            <button onclick="api.auth.logout()" class="btn btn-outline" style="padding: 0.5rem 1rem;">Logout</button>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <a href="#" class="sidebar-link active" onclick="showTab('explore')"><i class="fas fa-search"></i> Explore
+                Services</a>
+            <a href="#" class="sidebar-link" onclick="showTab('bookings')"><i class="fas fa-calendar-check"></i> My
+                Bookings</a>
+            <a href="#" class="sidebar-link" onclick="showTab('complaints')"><i class="fas fa-exclamation-circle"></i>
+                Complaints</a>
+        </aside>
+
+        <main class="main-content">
+            <div id="greetingBanner" class="glass animate-fade-in"
+                style="padding: 1.5rem 2rem; margin-bottom: 2rem; border-left: 4px solid var(--gold); display: flex; align-items: center; gap: 1.5rem;">
+                <div
+                    style="width: 50px; height: 50px; background: rgba(212, 175, 55, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--gold);">
+                    <i class="fas fa-hand-sparkles" style="font-size: 1.5rem;"></i>
+                </div>
+                <div>
+                    <h2 style="font-size: 1.5rem; border: none; margin-bottom: 0.2rem;">Welcome back, <span
+                            id="greetName" class="gold-text"></span>!</h2>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">What can we help you with in your home
+                        today?</p>
+                </div>
+            </div>
+
+            <div id="explore-tab">
+                <div class="search-bar glass">
+                    <input type="text" id="serviceSearch" placeholder="What are you looking for?" style="flex: 2;">
+                    <input type="text" id="locationSearch" placeholder="Location" style="flex: 1;">
+                    <button class="btn btn-primary" onclick="searchServices()">Search</button>
+                </div>
+
+                <div class="services-grid"
+                    style="margin-bottom: 3rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem;">
+                    <div class="service-card glass plumbing" onclick="filterByCategory('Plumbing')"
+                        style="padding: 1.5rem 1rem; text-align: center; cursor: pointer;">
+                        <i class="fas fa-faucet"
+                            style="font-size: 2rem; color: var(--gold); margin-bottom: 0.5rem;"></i>
+                        <h3 style="font-size: 1rem; margin-top: 0.5rem;">Plumbing</h3>
+                    </div>
+                    <div class="service-card glass electrical" onclick="filterByCategory('Electrical')"
+                        style="padding: 1.5rem 1rem; text-align: center; cursor: pointer;">
+                        <i class="fas fa-bolt" style="font-size: 2rem; color: var(--gold); margin-bottom: 0.5rem;"></i>
+                        <h3 style="font-size: 1rem; margin-top: 0.5rem;">Electrical</h3>
+                    </div>
+                    <div class="service-card glass cleaning" onclick="filterByCategory('Cleaning')"
+                        style="padding: 1.5rem 1rem; text-align: center; cursor: pointer;">
+                        <i class="fas fa-broom" style="font-size: 2rem; color: var(--gold); margin-bottom: 0.5rem;"></i>
+                        <h3 style="font-size: 1rem; margin-top: 0.5rem;">Cleaning</h3>
+                    </div>
+                    <div class="service-card glass painting" onclick="filterByCategory('Painting')"
+                        style="padding: 1.5rem 1rem; text-align: center; cursor: pointer;">
+                        <i class="fas fa-paint-roller"
+                            style="font-size: 2rem; color: var(--gold); margin-bottom: 0.5rem;"></i>
+                        <h3 style="font-size: 1rem; margin-top: 0.5rem;">Painting</h3>
+                    </div>
+                    <div class="service-card glass mechanics" onclick="filterByCategory('Mechanics')"
+                        style="padding: 1.5rem 1rem; text-align: center; cursor: pointer;">
+                        <i class="fas fa-tools" style="font-size: 2rem; color: var(--gold); margin-bottom: 0.5rem;"></i>
+                        <h3 style="font-size: 1rem; margin-top: 0.5rem;">Mechanics</h3>
+                    </div>
+                    <div class="service-card glass movers" onclick="filterByCategory('Movers')"
+                        style="padding: 1.5rem 1rem; text-align: center; cursor: pointer;">
+                        <i class="fas fa-truck-ramp-box"
+                            style="font-size: 2rem; color: var(--gold); margin-bottom: 0.5rem;"></i>
+                        <h3 style="font-size: 1rem; margin-top: 0.5rem;">Movers</h3>
+                    </div>
+                </div>
+
+
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+                    <div>
+                        <h3>Handpicked Recommendations</h3>
+                        <div class="provider-grid" id="recommendedGrid" style="margin-top: 1rem; margin-bottom: 3rem;">
+                            <!-- Recommended loaded here -->
+                        </div>
+
+                        <h3>Browse Available Specialists</h3>
+                        <div class="provider-grid" id="providerGrid" style="margin-top: 1rem;">
+                            <!-- Providers will be loaded here -->
+                        </div>
+                    </div>
+                    <div>
+                        <div class="glass" style="padding: 2rem; margin-bottom: 2rem;">
+                            <h3 class="gold-light-text"><i class="fas fa-bell"></i> Live Notifications</h3>
+                            <div id="notificationList" style="margin-top: 1rem; font-size: 0.9rem;">
+                                <p style="padding: 0.5rem 0; border-bottom: 1px solid var(--glass-border);">Welcome to
+                                    the new Premium Hub!</p>
+                                <p
+                                    style="padding: 0.5rem 0; border-bottom: 1px solid var(--glass-border); color: var(--text-muted);">
+                                    Your profile is 85% complete.</p>
+                                <p style="padding: 0.5rem 0; color: var(--text-muted);">New electrician added in your
+                                    area.</p>
+                            </div>
+                        </div>
+                        <div class="glass" style="padding: 2rem;">
+                            <h3 class="gold-light-text"><i class="fas fa-shield-heart"></i> SmartHome Protection</h3>
+                            <p style="font-size: 0.8rem; margin-top: 0.5rem; color: var(--text-muted);">Your home is
+                                currently secured with our Gold-tier service insurance.</p>
+                            <button class="btn btn-outline" style="width: 100%; margin-top: 1.5rem; font-size: 0.8rem;"
+                                onclick="openPolicy()">View Policy</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="bookings-tab" style="display: none;">
+                <h2>My Bookings</h2>
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-top: 2rem;">
+                    <div id="bookingList">
+                        <!-- Bookings will be loaded here -->
+                    </div>
+                    <div class="glass" style="padding: 2rem;">
+                        <h3>Activity Summary</h3>
+                        <div style="margin-top: 1.5rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                                <span>Total Bookings</span>
+                                <span id="totalBookingsCount" style="font-weight: 700;">0</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>Total Spent</span>
+                                <span id="totalSpent" style="font-weight: 700; color: var(--accent);">$0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="complaints-tab" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h2>Resolution Center</h2>
+                    <button class="btn btn-primary" onclick="openComplaintModal()">Submit New
+                        Complaint</button>
+                </div>
+                <div class="glass" style="padding: 2rem;">
+                    <h3 class="gold-light-text mb-4">Past & Active Complaints</h3>
+                    <div id="complaintList" style="margin-top: 1.5rem;">
+                        <!-- Complaints loaded here -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Redesigned Booking Modal -->
+    <div id="bookingModal" class="modal">
+        <div class="modal-content glass"
+            style="max-width: 480px; padding: 0; overflow: hidden; border: 1px solid var(--gold);">
+            <!-- Modal Header -->
+            <div
+                style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(99, 102, 241, 0.1)); padding: 2rem; text-align: center; border-bottom: 1px solid var(--glass-border);">
+                <div
+                    style="width: 60px; height: 60px; background: #0f172a; border: 2px solid var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);">
+                    <i class="fas fa-calendar-alt" style="font-size: 1.8rem; color: var(--gold);"></i>
+                </div>
+                <h2 id="modalProviderName" class="gold-text" style="font-size: 1.6rem; margin-bottom: 0.3rem;">Book
+                    Specialist</h2>
+                <p id="modalProviderCategory"
+                    style="color: var(--text-muted); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px;">
+                    Premium Service</p>
+            </div>
+
+            <!-- Modal Body -->
+            <form id="bookingForm" style="padding: 2rem;">
+                <input type="hidden" id="modalProviderId">
+
+                <div style="display: grid; grid-template-columns: 1fr; gap: 1.2rem; margin-bottom: 1.5rem;">
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 0.5rem; color: var(--gold-light);">
+                            <i class="fas fa-calendar-alt" style="color: var(--gold);"></i> Appointment Schedule
+                        </label>
+                        <input type="datetime-local" id="scheduleDate" required
+                            style="background: rgba(0,0,0,0.2); border-color: rgba(212, 175, 55, 0.3); color: var(--gold-light);">
+                    </div>
+
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="fas fa-location-dot gold-light-text"></i> Service Address
+                        </label>
+                        <input type="text" id="bookingLocation" required placeholder="Enter service location"
+                            style="background: rgba(0,0,0,0.2);">
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-primary"
+                        style="flex: 2; height: 48px; font-weight: 700; box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);">Confirm
+                        Booking</button>
+                    <button type="button" class="btn btn-outline" style="flex: 1; height: 48px;"
+                        onclick="closeModal()">Dismiss</button>
+                </div>
+
+                <div
+                    style="margin-top: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 1.5rem; color: var(--text-muted); font-size: 0.75rem;">
+                    <span style="display: flex; align-items: center; gap: 0.4rem;"><i class="fas fa-shield-check"
+                            style="color: #10b981;"></i> Secure Booking</span>
+                    <span style="display: flex; align-items: center; gap: 0.4rem;"><i class="fas fa-bolt"
+                            style="color: var(--gold);"></i> Instant Approval</span>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Policy Modal -->
+    <div id="policyModal" class="modal">
+        <div class="modal-content glass" style="max-width: 600px;">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+                <i class="fas fa-shield-halved" style="font-size: 2rem; color: var(--gold);"></i>
+                <h3 class="gold-text">SmartHome Protection Policy</h3>
+            </div>
+
+            <div
+                style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; font-size: 0.9rem;">
+                <div class="glass" style="padding: 1rem; border-color: rgba(255,255,255,0.05);">
+                    <p style="color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase;">Policy Number
+                    </p>
+                    <p style="font-weight: 700;">SH-GPT-2026-X99</p>
+                </div>
+                <div class="glass" style="padding: 1rem; border-color: rgba(255,255,255,0.05);">
+                    <p style="color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase;">Status</p>
+                    <p style="font-weight: 700; color: #10b981;">Active & Verified</p>
+                </div>
+                <div class="glass" style="padding: 1rem; border-color: rgba(255,255,255,0.05);">
+                    <p style="color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase;">Coverage Limit
+                    </p>
+                    <p style="font-weight: 700;">$50,000.00</p>
+                </div>
+                <div class="glass" style="padding: 1rem; border-color: rgba(255,255,255,0.05);">
+                    <p style="color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase;">Expiry Date</p>
+                    <p style="font-weight: 700;">Feb 28, 2027</p>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 2rem;">
+                <h4 style="color: var(--gold-light); margin-bottom: 1rem;">Included Benefits</h4>
+                <ul style="list-style: none; color: var(--text-muted); font-size: 0.85rem;">
+                    <li style="margin-bottom: 0.5rem;"><i class="fas fa-check-circle"
+                            style="color: var(--gold); margin-right: 0.5rem;"></i> 24/7 Priority Emergency Support</li>
+                    <li style="margin-bottom: 0.5rem;"><i class="fas fa-check-circle"
+                            style="color: var(--gold); margin-right: 0.5rem;"></i> Unlimited Specialist Call-outs</li>
+                    <li><i class="fas fa-check-circle" style="color: var(--gold); margin-right: 0.5rem;"></i> Damage
+                        Protection for Hub Devices</li>
+                </ul>
+            </div>
+
+            <button class="btn btn-primary" style="width: 100%;" onclick="closePolicy()">Acknowledge</button>
+        </div>
+    </div>
+
+    <!-- Redesigned Complaint Modal -->
+    <div id="complaintModal" class="modal">
+        <div class="modal-content glass"
+            style="max-width: 650px; padding: 0; overflow: hidden; border: 1px solid var(--gold);">
+            <!-- Modal Header -->
+            <div
+                style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(99, 102, 241, 0.1)); padding: 2.5rem; text-align: center; border-bottom: 1px solid var(--glass-border);">
+                <div
+                    style="width: 70px; height: 70px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; box-shadow: 0 0 25px rgba(212, 175, 55, 0.4);">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 2rem; color: #070b14;"></i>
+                </div>
+                <h2 class="gold-text" style="font-size: 2rem; margin-bottom: 0.5rem;">Resolution Center</h2>
+                <p style="color: var(--text-muted); font-size: 1rem;">Share your feedback. We're committed to your
+                    complete satisfaction.</p>
+            </div>
+
+            <!-- Modal Body -->
+            <form id="complaintForm" style="padding: 2.5rem;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 0.5rem;"><i
+                                class="fas fa-heading gold-light-text"></i> Subject</label>
+                        <input type="text" id="compSubject" placeholder="Briefly what's wrong" required
+                            style="background: rgba(0,0,0,0.2);">
+                    </div>
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 0.5rem;"><i
+                                class="fas fa-user-gear gold-light-text"></i> Service Agent</label>
+                        <input type="text" id="compProvider" placeholder="Name if known"
+                            style="background: rgba(0,0,0,0.2);">
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 2rem;">
+                    <label style="display: flex; align-items: center; gap: 0.5rem;"><i
+                            class="fas fa-comment-dots gold-light-text"></i> Detailed Description</label>
+                    <textarea id="compDesc" rows="5"
+                        placeholder="Please provide specific details so we can investigate accurately..." required
+                        style="background: rgba(0,0,0,0.2); resize: none;"></textarea>
+                </div>
+
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-primary"
+                        style="flex: 2; height: 55px; font-weight: 700; box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);">Establish
+                        Resolution Case</button>
+                    <button type="button" class="btn btn-outline" style="flex: 1; height: 55px;"
+                        onclick="closeComplaintModal()">Dismiss</button>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.8rem; text-align: center; margin-top: 1.5rem;">
+                    <i class="fas fa-shield-halved" style="color: #10b981; margin-right: 0.3rem;"></i> All cases are
+                    reviewed within 24 hours under our protection policy.
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Review Submission Modal -->
+    <div id="reviewModal" class="modal">
+        <div class="modal-content glass"
+            style="max-width: 500px; padding: 0; overflow: hidden; border: 1px solid var(--gold);">
+            <div
+                style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(99, 102, 241, 0.1)); padding: 2rem; text-align: center; border-bottom: 1px solid var(--glass-border);">
+                <div
+                    style="width: 60px; height: 60px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);">
+                    <i class="fas fa-star" style="font-size: 1.8rem; color: #070b14;"></i>
+                </div>
+                <h2 id="reviewModalProvider" class="gold-text" style="font-size: 1.6rem; margin-bottom: 0.3rem;">Rate
+                    Service</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Your feedback helps us maintain high quality
+                    standards.</p>
+            </div>
+
+            <form id="reviewForm" style="padding: 2rem;">
+                <input type="hidden" id="reviewBookingId">
+
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.8rem; text-align: center;">Select Rating</label>
+                    <div class="star-rating"
+                        style="display: flex; justify-content: center; gap: 0.8rem; font-size: 1.5rem; color: var(--gold-light);">
+                        <i class="far fa-star" data-rating="1" onclick="setRating(1)" style="cursor: pointer;"></i>
+                        <i class="far fa-star" data-rating="2" onclick="setRating(2)" style="cursor: pointer;"></i>
+                        <i class="far fa-star" data-rating="3" onclick="setRating(3)" style="cursor: pointer;"></i>
+                        <i class="far fa-star" data-rating="4" onclick="setRating(4)" style="cursor: pointer;"></i>
+                        <i class="far fa-star" data-rating="5" onclick="setRating(5)" style="cursor: pointer;"></i>
+                    </div>
+                    <input type="hidden" id="reviewRating" value="5">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label>Share your experience</label>
+                    <textarea id="reviewComment" rows="4"
+                        placeholder="How was the service? (Professionalism, Quality, Speed...)"
+                        style="background: rgba(0,0,0,0.2); resize: none;" required></textarea>
+                </div>
+
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-primary"
+                        style="flex: 2; height: 48px; font-weight: 700;">Submit Review</button>
+                    <button type="button" class="btn btn-outline" style="flex: 1; height: 48px;"
+                        onclick="closeReviewModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        const user = checkAuth();
+        document.getElementById('userName').textContent = `Hello, ${user.username || 'User'}`;
+        document.getElementById('greetName').textContent = user.username || 'User';
+        document.getElementById('bookingLocation').value = user.location || "";
+
+        function filterByCategory(category) {
+            document.getElementById('serviceSearch').value = category;
+            searchServices();
+        }
+
+        async function searchServices() {
+            const query = document.getElementById('serviceSearch').value;
+            const loc = document.getElementById('locationSearch').value;
+            const grid = document.getElementById('providerGrid');
+            grid.innerHTML = '<p>Loading...</p>';
+
+            try {
+                const providers = await api.user.getServices(query, loc);
+                grid.innerHTML = providers.length ? '' : '<p>No providers found in this area.</p>';
+                providers.forEach(p => {
+                    grid.innerHTML += `
+                        <div class="service-card glass">
+                            <i class="fas fa-user-circle" style="font-size: 2rem; color: var(--primary);"></i>
+                            <h3>${p.name}</h3>
+                            <p style="color: var(--gold); font-weight: 700; text-transform: uppercase; font-size: 0.8rem; margin-bottom: 0.5rem;">Role: ${p.category_name || p.category || 'Professional'}</p>
+                            <p>${p.description || 'Professional home service.'}</p>
+                            <p style="margin: 1rem 0;">Starting at: <strong>$${p.price}</strong></p>
+                            <button class="btn btn-primary" style="width: 100%;" onclick="openBooking('${p.id}', '${p.name}', '${p.category_name || p.category}')">Book Now</button>
+                        </div>
+                    `;
+                });
+            } catch (err) {
+                grid.innerHTML = `<p>Error: ${err.message}</p>`;
+            }
+        }
+
+        function openBooking(id, name, category) {
+            document.getElementById('modalProviderId').value = id;
+            document.getElementById('modalProviderName').textContent = `Book ${name}`;
+            document.getElementById('modalProviderCategory').textContent = category || 'Premium Service Selection';
+            document.getElementById('bookingModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('bookingModal').style.display = 'none';
+        }
+
+        document.getElementById('bookingForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const provider_id = document.getElementById('modalProviderId').value;
+            const dateValue = document.getElementById('scheduleDate').value;
+            const location = document.getElementById('bookingLocation').value;
+
+            // Format date for API (YYYY-MM-DD HH:MM)
+            const scheduled_date = dateValue.replace('T', ' ');
+
+            try {
+                await api.user.bookService({ provider_id, scheduled_date, location });
+                alert("Booking successful!");
+                closeModal();
+                showTab('bookings');
+            } catch (err) {
+                alert(err.message);
+            }
+        });
+
+        async function loadMyBookings() {
+            const list = document.getElementById('bookingList');
+            list.innerHTML = '<p>Loading...</p>';
+            try {
+                const bookings = await api.user.getMyBookings();
+                list.innerHTML = bookings.length ? '' : '<p>No bookings yet.</p>';
+
+                let total = 0;
+                bookings.forEach(b => {
+                    if (b.status === 'Completed') {
+                        total += (b.amount || b.price || 0);
+                    }
+                    const statusColor = b.status === 'Completed' ? '#10b981' : 'var(--primary)';
+                    const isCompleted = b.status === 'Completed';
+                    const alreadyReviewed = b.review_id != null;
+
+                    list.innerHTML += `
+                        <div class="glass" style="padding: 1.5rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h4>${b.provider} - ${b.category}</h4>
+                                <p style="color: var(--text-muted); font-size: 0.9rem;">Date: ${b.scheduled_date}</p>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                ${isCompleted && !alreadyReviewed ? `
+                                    <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.4rem 0.8rem; border-color: var(--gold); color: var(--gold);" onclick="openReviewModal('${b.id}', '${b.provider}')">
+                                        <i class="fas fa-star" style="margin-right: 0.3rem;"></i> Review
+                                    </button>
+                                ` : ''}
+                                ${alreadyReviewed ? `
+                                    <span style="font-size: 0.75rem; color: var(--gold-light); display: flex; align-items: center; gap: 0.3rem;">
+                                        <i class="fas fa-check-circle"></i> Reviewed
+                                    </span>
+                                ` : ''}
+                                <span style="background: ${statusColor}; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: 700;">${b.status}</span>
+                                <strong style="color: var(--gold-light);">$${b.amount || 0}</strong>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                document.getElementById('totalBookingsCount').textContent = bookings.length;
+                document.getElementById('totalSpent').textContent = `$${total}`;
+
+            } catch (err) {
+                list.innerHTML = `<p>Error: ${err.message}</p>`;
+            }
+        }
+
+        async function loadComplaints() {
+            const list = document.getElementById('complaintList');
+            list.innerHTML = '<p>Loading...</p>';
+            try {
+                const complaints = await api.user.getComplaints();
+                list.innerHTML = complaints.length ? '' : '<p>No complaints filed.</p>';
+
+                complaints.forEach(c => {
+                    const statusColor = c.status === 'Resolved' ? '#10b981' : '#f59e0b';
+                    list.innerHTML += `
+                        <div class="glass" style="padding: 1.5rem; margin-bottom: 1rem; border-left: 4px solid ${statusColor};">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                <div>
+                                    <h4 style="margin-bottom: 0.5rem;">${c.subject} <small style="color: var(--text-muted); font-weight: normal;">#${c.id}</small></h4>
+                                    <p style="font-size: 0.9rem; margin-bottom: 0.5rem;">${c.description}</p>
+                                    <small style="color: var(--text-muted);">Against: ${c.provider} | Date: ${c.date}</small>
+                                </div>
+                                <span style="background: ${statusColor}22; color: ${statusColor}; padding: 0.2rem 0.6rem; border-radius: 5px; font-size: 0.75rem; font-weight: 700; border: 1px solid ${statusColor}AA;">${c.status}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch (err) {
+                list.innerHTML = `<p>Error: ${err.message}</p>`;
+            }
+        }
+
+        function showTab(tab) {
+            document.getElementById('explore-tab').style.display = tab === 'explore' ? 'block' : 'none';
+            document.getElementById('bookings-tab').style.display = tab === 'bookings' ? 'block' : 'none';
+            document.getElementById('complaints-tab').style.display = tab === 'complaints' ? 'block' : 'none';
+
+            const links = document.querySelectorAll('.sidebar-link');
+            links.forEach(l => l.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            if (tab === 'bookings') loadMyBookings();
+            if (tab === 'explore') searchServices();
+            if (tab === 'complaints') loadComplaints();
+        }
+
+        async function loadRecommendations() {
+            const grid = document.getElementById('recommendedGrid');
+            try {
+                const providers = await api.user.getServices("Plumbing"); // Default recommendation
+                grid.innerHTML = providers.slice(0, 2).map(p => `
+                    <div class="service-card glass premium-card">
+                        <i class="fas fa-star" style="font-size: 1.5rem; color: var(--gold); margin-bottom: 1rem;"></i>
+                        <h3 style="font-size: 1.1rem;">${p.name}</h3>
+                        <p style="color: var(--gold); font-size: 0.8rem;">Featured Recommendation</p>
+                        <button class="btn btn-outline" style="width: 100%; margin-top: 1rem; font-size: 0.8rem;" onclick="openBooking('${p.id}', '${p.name}', '${p.category_name || p.category}')">Quick Book</button>
+                    </div>
+                `).join('');
+            } catch (e) { }
+        }
+
+        // Policy Modal Logic
+        function openPolicy() { document.getElementById('policyModal').style.display = 'flex'; }
+        function closePolicy() { document.getElementById('policyModal').style.display = 'none'; }
+
+        // Complaint Modal Logic
+        function openComplaintModal() { document.getElementById('complaintModal').style.display = 'flex'; }
+        function closeComplaintModal() { document.getElementById('complaintModal').style.display = 'none'; }
+
+        document.getElementById('complaintForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                subject: document.getElementById('compSubject').value,
+                provider: document.getElementById('compProvider').value || 'Unknown',
+                description: document.getElementById('compDesc').value
+            };
+            try {
+                await api.user.fileComplaint(data);
+                alert("Complaint filed. Our support team will review it.");
+                closeComplaintModal();
+                loadComplaints();
+            } catch (err) {
+                alert(err.message);
+            }
+        });
+
+        // Review Modal Logic
+        let currentRating = 5;
+        function openReviewModal(id, provider) {
+            document.getElementById('reviewBookingId').value = id;
+            document.getElementById('reviewModalProvider').textContent = `Review ${provider}`;
+            document.getElementById('reviewModal').style.display = 'flex';
+            setRating(5);
+        }
+
+        function closeReviewModal() {
+            document.getElementById('reviewModal').style.display = 'none';
+        }
+
+        function setRating(r) {
+            currentRating = r;
+            document.getElementById('reviewRating').value = r;
+            const stars = document.querySelectorAll('.star-rating i');
+            stars.forEach((s, idx) => {
+                if (idx < r) {
+                    s.classList.remove('far');
+                    s.classList.add('fas');
+                } else {
+                    s.classList.remove('fas');
+                    s.classList.add('far');
+                }
+            });
+        }
+
+        document.getElementById('reviewForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                booking_id: document.getElementById('reviewBookingId').value,
+                rating: parseInt(document.getElementById('reviewRating').value),
+                comment: document.getElementById('reviewComment').value
+            };
+            try {
+                await api.user.submitReview(data);
+                alert("Thank you for your review!");
+                closeReviewModal();
+                loadMyBookings();
+            } catch (err) {
+                alert(err.message);
+            }
+        });
+
+        // Initial Load
+        searchServices();
+        loadRecommendations();
+    </script>
+</body>
+
+</html>
